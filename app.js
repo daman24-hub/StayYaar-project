@@ -1,7 +1,14 @@
 // Check for NODE_ENV is not set on "production".
-// if (process.env.NODE_ENV != "production") 
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
 console.log("ATLAS URL:", process.env.ATLAS_DB_URL); // ← add this
+
+console.log("ENV CHECK:", {
+    NODE_ENV: process.env.NODE_ENV,
+    SECRET: !!process.env.SECRET,
+    ATLAS_DB_URL: !!process.env.ATLAS_DB_URL,
+});
 
 const express = require("express");
 const mongoose = require("mongoose");
