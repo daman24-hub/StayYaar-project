@@ -61,6 +61,7 @@ store.on("error", (error) => {
 
 // express-session parameters.
 const sessionOptions = {
+    store: store, 
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
