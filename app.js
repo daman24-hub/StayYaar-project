@@ -54,9 +54,10 @@ main().catch((err) => console.log(err));
 const store = MongoStore.create({
     mongoUrl: cloudDatabaseUrl,
     crypto: {
-        secret: process.env.SECRET,
+        secret: process.env.SECRET || "fallbacksecret",
     },
     touchAfter: 24 * 3600,
+    stringify: false,
 });
 
 // Handling Error if session store fails.
