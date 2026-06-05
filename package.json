@@ -1,11 +1,12 @@
 {
-  "engines":{
-    "node": "20.20.2"
-  },
   "name": "zenvora",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
+  "engines": {
+    "node": "20.20.2"
+  },
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
