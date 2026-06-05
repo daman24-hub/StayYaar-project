@@ -1,0 +1,100 @@
+<% layout("layouts/boilerplate") %>
+
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Har safar ka apna yaar</h1>
+            <p>Discover unique places around the world</p>
+        </div>
+    </div>
+
+    <div id="filter-tax-switch-container">
+        <!-- Filter Section -->
+        <div class="filters-container">
+            <a href="/listings" class="filter-link">
+                <div class="filter <%= !activeCategory ? 'active-filter' : '' %>">
+                    <i class="fa-solid fa-globe"></i>
+                    <small>All</small>
+                </div>
+            </a>
+            <a href="/listings?category=Amazing Views" class="filter-link">
+                <div class="filter <%= activeCategory === 'Amazing Views' ? 'active-filter' : '' %>">
+                    <i class="fa-solid fa-mountain-sun"></i>
+                    <small>Amazing Views</small>
+                </div>
+            </a>
+            <a href="/listings?category=Trending" class="filter-link">
+                <div class="filter <%= activeCategory === 'Trending' ? 'active-filter' : '' %>">
+                    <i class="fa-solid fa-fire"></i>
+                    <small>Trending</small>
+                </div>
+            </a>
+            <a href="/listings?category=Bed+%26+Breakfasts" class="filter-link">
+                <div class="filter <%= activeCategory === 'Bed & Breakfasts' ? 'active-filter' : '' %>">
+                    <i class="fa-solid fa-mug-hot"></i>
+                    <small>Bed & Breakfasts</small>
+                </div>
+            </a>
+            <a href="/listings?category=Arctic" class="filter-link">
+                <div class="filter <%= activeCategory === 'Arctic' ? 'active-filter' : '' %>">
+                    <i class="fa-regular fa-snowflake"></i>
+                    <small>Arctic</small>
+                </div>
+            </a>
+            <a href="/listings?category=Camping" class="filter-link">
+                <div class="filter <%= activeCategory === 'Camping' ? 'active-filter' : '' %>">
+                    <i class="fa-solid fa-campground"></i>
+                    <small>Camping</small>
+                </div>
+            </a>
+            <a href="/listings?category=Amazing Pools" class="filter-link">
+                <div class="filter <%= activeCategory === 'Amazing Pools' ? 'active-filter' : '' %>">
+                    <i class="fa-solid fa-person-swimming"></i>
+                    <small>Amazing Pools</small>
+                </div>
+            </a>
+            <a href="/listings?category=Castles" class="filter-link">
+                <div class="filter <%= activeCategory === 'Castles' ? 'active-filter' : '' %>">
+                    <i class="fa-brands fa-fort-awesome"></i>
+                    <small>Castles</small>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tax Switch Section -->
+        <div class="tax-toggle-container">
+            <div class="form-check-reverse form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" onclick="texSwitchToggle()">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Display total before taxes</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Listing Section -->
+    <div class="card-container row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+        <% if (listings.length === 0) { %>
+            <p class="text-center mt-5 w-100">No listings found for this category.</p>
+        <% } %>
+        <% for (let listing of listings) { %>
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+            <div class="card col listing-card position-relative" style="width: 18.5rem">
+                <i class="fa-regular fa-heart wishlist-icon"></i>
+                <img
+                    src="<%= listing.image.url %>"
+                    class="card-img-top"
+                    alt="Card Image"
+                    style="height: 15rem"
+                    onerror="this.src='https://images.unsplash.com/photo-1625505826533-5c80aca7d157?auto=format&fit=crop&w=800&q=60'" />
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                    <h6 class="card-title"><%= listing.title %></h6>
+                    <p class="card-text">
+                        &#8377;<%= listing.price.toLocaleString("en-IN") %><span> per guest</span>
+                        <small><i class="tax-info">&nbsp;&nbsp;&nbsp;&nbsp;+18% GST</i></small>
+                    </p>
+                </div>
+            </div>
+        </a>
+        <% } %>
+    </div>
+</body>

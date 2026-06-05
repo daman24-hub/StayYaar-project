@@ -1,0 +1,238 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="login-page">
+    <!-- Left Side - Image -->
+    <div class="login-image-side">
+        <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80" alt="Stay" />
+        <div class="login-image-overlay">
+            <h2>Your next adventure is just one stay away</h2>
+            <p>Join thousands of travelers discovering unique places.</p>
+        </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="login-form-side">
+        <div class="login-form-container">
+            <!-- Logo -->
+            <a href="/listings" class="login-logo">
+                <i class="fa-solid fa-mountain-city"></i>
+                StayYaar
+            </a>
+
+            <h2 class="login-title">Create account</h2>
+            <p class="login-subtitle">Sign up to start your journey</p>
+
+            <form action="/signup" method="post" class="needs-validation" novalidate>
+                <div class="login-input-group">
+                    <label for="username">Username</label>
+                    <div class="login-input-wrapper">
+                        <i class="fa-solid fa-user"></i>
+                        <input
+                            type="text"
+                            name="username"
+                            id="username"
+                            placeholder="Choose a username"
+                            required />
+                    </div>
+                </div>
+
+                <div class="login-input-group">
+                    <label for="email">Email</label>
+                    <div class="login-input-wrapper">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            required />
+                    </div>
+                </div>
+
+                <div class="login-input-group">
+                    <label for="password">Password</label>
+                    <div class="login-input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            placeholder="Create a password"
+                            required />
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn">Sign Up</button>
+
+                <p class="login-signup-link">
+                    Already have an account? <a href="/login">Log In</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.login-page {
+    display: flex;
+    min-height: 90vh;
+    margin: 0 -12px;
+}
+
+.login-image-side {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .login-image-side {
+        display: block;
+    }
+}
+
+.login-image-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.login-image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2.5rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.75));
+    color: white;
+}
+
+.login-image-overlay h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.login-image-overlay p {
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+.login-form-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #fff;
+}
+
+.login-form-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ff385c;
+    text-decoration: none;
+    margin-bottom: 2rem;
+}
+
+.login-logo i {
+    font-size: 1.6rem;
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #222;
+    margin-bottom: 0.4rem;
+}
+
+.login-subtitle {
+    color: #717171;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.login-input-group {
+    margin-bottom: 1.25rem;
+}
+
+.login-input-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 0.4rem;
+}
+
+.login-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.login-input-wrapper i {
+    position: absolute;
+    left: 1rem;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.login-input-wrapper input {
+    width: 100%;
+    padding: 0.85rem 1rem 0.85rem 2.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.login-input-wrapper input:focus {
+    border-color: #ff385c;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 0.9rem;
+    background: #ff385c;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.login-btn:hover {
+    background: #e0314f;
+    transform: translateY(-1px);
+}
+
+.login-signup-link {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #717171;
+}
+
+.login-signup-link a {
+    color: #ff385c;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-signup-link a:hover {
+    text-decoration: underline;
+}
+</style>

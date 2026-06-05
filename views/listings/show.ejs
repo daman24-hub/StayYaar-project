@@ -1,0 +1,547 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="show-page">
+
+    <!-- Back Button -->
+    <a href="/listings" class="show-back-btn">
+        <i class="fa-solid fa-arrow-left"></i> Back to listings
+    </a>
+
+    <!-- Hero Image -->
+    <div class="show-hero">
+        <img src="<%= listing.image.url %>" alt="<%= listing.title %>" />
+        <div class="show-category-badge"><%= listing.category || "Stay" %></div>
+    </div>
+
+    <div class="show-content">
+
+        <!-- Left Column -->
+        <div class="show-left">
+
+            <!-- Title & Location -->
+            <div class="show-header">
+                <h1><%= listing.title %></h1>
+                <p class="show-location"><i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %></p>
+            </div>
+
+            <hr />
+
+            <!-- Host Info -->
+            <div class="show-host">
+                <div class="show-host-avatar">
+                    <%= listing.owner ? listing.owner.username.charAt(0).toUpperCase() : "?" %>
+                </div>
+                <div>
+                    <p class="show-host-label">Hosted by</p>
+                    <p class="show-host-name"><%= listing.owner ? listing.owner.username : "Unknown" %></p>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Description -->
+            <div class="show-description">
+                <h5>About this place</h5>
+                <p><%= listing.description %></p>
+            </div>
+
+            <hr />
+
+            <!-- Map -->
+            <div class="show-map-section">
+                <h5><i class="fa-solid fa-map-location-dot"></i> Location</h5>
+                <div id="map"></div>
+                <p class="show-map-label"><%= listing.location %>, <%= listing.country %></p>
+            </div>
+
+            <hr />
+
+            <!-- Edit/Delete (Owner only) -->
+            <% if (currentUser && listing.owner && currentUser._id.equals(listing.owner._id)) { %>
+            <div class="show-actions">
+                <a href="/listings/<%= listing._id %>/edit" class="show-edit-btn">
+                    <i class="fa-solid fa-pen"></i> Edit Listing
+                </a>
+                <form action="/listings/<%= listing._id %>?_method=DELETE" method="post">
+                    <button class="show-delete-btn">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </form>
+            </div>
+            <hr />
+            <% } %>
+
+            <!-- Review Form -->
+            <% if (currentUser) { %>
+            <div class="show-review-form">
+                <h5>Rate this place</h5>
+                <small>Tell others what you think.</small>
+                <form action="/listings/<%= listing.id %>/reviews" method="POST" class="needs-validation" novalidate>
+                    <div class="mt-3 mb-2">
+                        <fieldset class="starability-basic">
+                            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                            <label for="first-rate1" title="Terrible!">1 star</label>
+                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                            <label for="first-rate2" title="Not good!">2 stars</label>
+                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                            <label for="first-rate3" title="Average!">3 stars</label>
+                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                            <label for="first-rate4" title="Very good!">4 stars</label>
+                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                            <label for="first-rate5" title="Amazing!">5 stars</label>
+                        </fieldset>
+                    </div>
+                    <textarea
+                        name="review[comment]"
+                        class="show-review-textarea"
+                        placeholder="Describe your experience..."
+                        rows="3"
+                        required></textarea>
+                    <div class="invalid-feedback">Please add a comment.</div>
+                    <button type="submit" class="show-review-submit">Submit Review</button>
+                </form>
+            </div>
+            <hr />
+            <% } %>
+
+            <!-- Reviews List -->
+            <div class="show-reviews">
+                <h5>Reviews <span class="show-review-count">(<%= listing.reviews.length %>)</span></h5>
+                <% if (listing.reviews.length === 0) { %>
+                    <p class="show-no-reviews">No reviews yet. Be the first to review!</p>
+                <% } %>
+                <div class="show-reviews-grid">
+                    <% for(review of listing.reviews) { %>
+                    <div class="show-review-card">
+                        <div class="show-review-header">
+                            <div class="show-review-avatar">
+                                <%= review.author.username.charAt(0).toUpperCase() %>
+                            </div>
+                            <div>
+                                <p class="show-review-author">@<%= review.author.username %></p>
+                                <small class="show-review-date"><%= new Date(review.createdAt).toDateString() %></small>
+                            </div>
+                        </div>
+                        <div class="show-review-stars">
+                            <% for(let i=1; i <= review.rating; i++) { %>
+                                <i class="fa-solid fa-star" style="color:#ff385c; font-size:0.8rem;"></i>
+                            <% } %>
+                            <% for(let i=1; i <= (5-review.rating); i++) { %>
+                                <i class="fa-regular fa-star" style="color:#ff385c; font-size:0.8rem;"></i>
+                            <% } %>
+                        </div>
+                        <p class="show-review-comment"><%= review.comment %></p>
+                        <% if (currentUser && currentUser._id.equals(review.author._id)) { %>
+                        <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="post">
+                            <button class="show-review-delete">Delete</button>
+                        </form>
+                        <% } %>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column - Price Card -->
+        <div class="show-right">
+            <div class="show-price-card">
+                <div class="show-price">
+                    <span class="show-price-amount">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+                    <span class="show-price-label"> / night</span>
+                </div>
+                <div class="show-price-taxes">
+                    <small>+18% GST • &#8377;<%= Math.round(listing.price * 0.18).toLocaleString("en-IN") %> taxes</small>
+                </div>
+                <hr />
+                <div class="show-price-total">
+                    <span>Total</span>
+                    <span>&#8377;<%= Math.round(listing.price * 1.18).toLocaleString("en-IN") %></span>
+                </div>
+                <button class="show-reserve-btn">Reserve</button>
+                <p class="show-reserve-note">You won't be charged yet</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const listingLat = <%= listing.latitude %>;
+    const listingLng = <%= listing.longitude %>;
+</script>
+
+<style>
+.show-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 3rem;
+}
+
+.show-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: background 0.2s;
+}
+
+.show-back-btn:hover {
+    background: #f5f5f5;
+    color: #000;
+}
+
+.show-hero {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 420px;
+    margin-bottom: 2rem;
+}
+
+.show-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.show-category-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+}
+
+.show-content {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+}
+
+.show-left {
+    flex: 1.5;
+}
+
+.show-right {
+    flex: 0.7;
+    position: sticky;
+    top: 100px;
+}
+
+.show-header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #222;
+    margin-bottom: 0.4rem;
+}
+
+.show-location {
+    color: #717171;
+    font-size: 0.95rem;
+}
+
+.show-location i {
+    color: #ff385c;
+}
+
+.show-host {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.show-host-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #ff385c;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.show-host-label {
+    font-size: 0.8rem;
+    color: #717171;
+    margin: 0;
+}
+
+.show-host-name {
+    font-weight: 700;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.show-description h5,
+.show-map-section h5,
+.show-review-form h5,
+.show-reviews h5 {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+
+.show-description p {
+    color: #444;
+    line-height: 1.7;
+}
+
+#map {
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.show-map-label {
+    font-size: 0.85rem;
+    color: #717171;
+}
+
+.show-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.show-edit-btn {
+    padding: 0.6rem 1.5rem;
+    background: #222;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.show-edit-btn:hover {
+    background: #444;
+    color: white;
+}
+
+.show-delete-btn {
+    padding: 0.6rem 1.5rem;
+    background: white;
+    color: #ff385c;
+    border: 2px solid #ff385c;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.show-delete-btn:hover {
+    background: #ff385c;
+    color: white;
+}
+
+.show-review-form small {
+    color: #717171;
+    font-size: 0.85rem;
+}
+
+.show-review-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    margin-top: 0.75rem;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.show-review-textarea:focus {
+    border-color: #ff385c;
+}
+
+.show-review-submit {
+    margin-top: 0.75rem;
+    padding: 0.7rem 2rem;
+    background: #ff385c;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.show-review-submit:hover {
+    background: #e0314f;
+}
+
+.show-review-count {
+    color: #717171;
+    font-weight: 400;
+    font-size: 0.95rem;
+}
+
+.show-no-reviews {
+    color: #717171;
+    font-style: italic;
+}
+
+.show-reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.show-review-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+}
+
+.show-review-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.show-review-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #222;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.show-review-author {
+    font-weight: 700;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.show-review-date {
+    color: #aaa;
+    font-size: 0.78rem;
+}
+
+.show-review-stars {
+    margin-bottom: 0.5rem;
+}
+
+.show-review-comment {
+    color: #444;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.show-review-delete {
+    background: none;
+    border: none;
+    color: #ff385c;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+}
+
+.show-price-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.show-price {
+    margin-bottom: 0.25rem;
+}
+
+.show-price-amount {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #222;
+}
+
+.show-price-label {
+    color: #717171;
+    font-size: 0.95rem;
+}
+
+.show-price-taxes {
+    color: #717171;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.show-price-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.show-reserve-btn {
+    width: 100%;
+    padding: 0.9rem;
+    background: #ff385c;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.show-reserve-btn:hover {
+    background: #e0314f;
+}
+
+.show-reserve-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #717171;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .show-content {
+        flex-direction: column;
+    }
+    .show-right {
+        position: static;
+        width: 100%;
+    }
+    .show-reviews-grid {
+        grid-template-columns: 1fr;
+    }
+    .show-hero {
+        height: 280px;
+    }
+}
+</style>

@@ -1,0 +1,78 @@
+<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+    <div class="container-fluid px-4">
+
+        <!-- Logo -->
+        <a class="navbar-brand logo" href="/listings">
+        <div class="logo-badge">
+        <i class="fa-solid fa-mountain-city"></i>
+       </div>
+       <span class="logo-text">StayYaar</span>
+       </a>
+
+        <!-- Mobile Toggle -->
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav">
+
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Content -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <!-- Left -->
+            <div class="navbar-nav">
+                <a class="nav-link fw-semibold" href="/listings">
+                    Explore
+                </a>
+            </div>
+
+            <!-- Center Search -->
+            <form class="d-flex mx-auto search-form">
+                <input
+                    class="form-control search-box"
+                    type="search"
+                    placeholder="Search destinations">
+
+                <button class="search-btn ms-2">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Search
+                </button>
+            </form>
+
+            <!-- Right -->
+            <div class="navbar-nav fw-bold ms-auto align-items-center">
+
+    <% if(currentUser){ %>
+    <div class="user-profile">
+        <div class="avatar">
+            <%= currentUser.username.charAt(0).toUpperCase() %>
+        </div>
+
+        <span>
+            <%= currentUser.username %>
+        </span>
+    </div>
+<% } %>
+
+    <a class="nav-link" href="/listings/new">Add Your Hut</a>
+
+    <% if (!currentUser) { %>
+        <a class="nav-link" href="/login">Log In</a>
+        <a class="nav-link" href="/signup">Sign Up</a>
+
+    <% } else { %>
+
+        <a class="nav-link logout-btn" href="/logout">
+            Log Out
+        </a>
+
+    <% } %>
+
+</div>
+
+        </div>
+    </div>
+</nav>
