@@ -159,8 +159,16 @@
                     <span>Total</span>
                     <span>&#8377;<%= Math.round(listing.price * 1.18).toLocaleString("en-IN") %></span>
                 </div>
-                <button class="show-reserve-btn">Reserve</button>
-                <p class="show-reserve-note">You won't be charged yet</p>
+                <% if (currentUser) { %>
+<form action="/listings/<%= listing._id %>/reserve" method="POST">
+    <button type="submit" class="show-reserve-btn">Reserve</button>
+</form>
+<% } else { %>
+<a href="/login" class="show-reserve-btn" style="display:block; text-align:center; text-decoration:none;">
+    Login to Reserve
+</a>
+<% } %>
+<p class="show-reserve-note">You won't be charged yet</p>
             </div>
         </div>
 
