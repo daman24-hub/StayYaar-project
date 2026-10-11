@@ -6,6 +6,22 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    phone: {
+        type: String,
+        default: ""
+    },
+    bookings: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Booking" 
+    }],
+    hostedListings: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Listing" 
+    }],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 userSchema.plugin(passportLocalMongoose);
