@@ -19,19 +19,17 @@ module.exports.saveRedirectUrl = (req, res, next) => {
 
 module.exports.isOwner = async (req, res, next) => {
     const { id } = req.params;
-    let listing = await Listing.findById(id);
-    
+    const listing = await Listing.findById(id);
+
     if (!listing) {
         req.flash("error", "Listing not found.");
         return res.redirect("/listings");
     }
-    
-    if (!listing.owner) {
-        req.flash("error", "Listing owner not found.");
-        return res.redirect("/listings");
-    }
-    
-    if (!listing.owner.equals(res.locals.currentUser._id)) {
+
+    const isAdmin = res.locals.currentUser.username === process.env.ADMIN_USERNAME;
+    const isListingOwner = listing.owner && listing.owner.equals(res.locals.currentUser._id);
+
+    if (!isAdmin && !isListingOwner) {
         req.flash("error", "You are not authorized to make changes.");
         return res.redirect(`/listings/${id}`);
     }
