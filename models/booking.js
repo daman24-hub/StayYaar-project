@@ -31,7 +31,7 @@ const bookingSchema = new Schema({
     updatedAt: { type: Date, default: Date.now }
 });
 
-bookingSchema.pre("save", function (next) {
+bookingSchema.pre("save", function () {
     if (this.checkInDate && this.checkOutDate) {
         const oneDay = 24 * 60 * 60 * 1000;
         this.numberOfNights = Math.ceil((this.checkOutDate - this.checkInDate) / oneDay);
@@ -47,7 +47,6 @@ bookingSchema.pre("save", function (next) {
     }
 
     this.updatedAt = Date.now();
-    next();
 });
 
 module.exports = mongoose.model("Booking", bookingSchema);
