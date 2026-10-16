@@ -1,0 +1,22 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="container mt-4">
+    <h2>Booking Details</h2>
+
+    <div class="card p-4">
+        <h4><%= booking.listing.title %></h4>
+        <p>Guest: <%= booking.guest.username %></p>
+        <p>Host: <%= booking.host.username %></p>
+        <p>Check-in: <%= new Date(booking.checkInDate).toDateString() %></p>
+        <p>Check-out: <%= new Date(booking.checkOutDate).toDateString() %></p>
+        <p>Guests: <%= booking.numberOfGuests %></p>
+        <p>Status: <%= booking.status %></p>
+        <p>Total Price: ₹<%= booking.finalPrice.toLocaleString("en-IN") %></p>
+
+        <% if (booking.status === "pending") { %>
+            <form action="/bookings/<%= booking._id %>/cancel?_method=PATCH" method="POST">
+                <button class="btn btn-outline-danger">Cancel Booking</button>
+            </form>
+        <% } %>
+    </div>
+</div>

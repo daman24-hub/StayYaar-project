@@ -4,6 +4,10 @@ const Review = require("../models/review.js");
 // Add Review Route Callback.
 module.exports.addReview = async (req, res) => {
     let listing = await Listing.findById(req.params.id);
+    if (!listing) {
+    req.flash("error", "Listing not found.");
+    return res.redirect("/listings");
+}
     let newReview = new Review(req.body.review);
     newReview.author = req.user._id;
 

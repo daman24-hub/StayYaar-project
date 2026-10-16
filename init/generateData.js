@@ -135,7 +135,7 @@ function generateListings() {
       description: `Beautiful ${category} property.`,
       image: {
         filename: "listingimage",
-        url: placeImages[i]
+        url: placeImages[i % placeImages.length]
       },
       price: Math.floor(Math.random() * 5000) + 1000,
       location: locations[Math.floor(Math.random() * locations.length)],

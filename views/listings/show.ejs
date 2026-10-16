@@ -160,9 +160,9 @@
                     <span>&#8377;<%= Math.round(listing.price * 1.18).toLocaleString("en-IN") %></span>
                 </div>
                 <% if (currentUser) { %>
-<form action="/listings/<%= listing._id %>/reserve" method="POST">
-    <button type="submit" class="show-reserve-btn">Reserve</button>
-</form>
+<a href="/bookings/new/<%= listing._id %>" class="show-reserve-btn" style="display:block; text-align:center; text-decoration:none;">
+    Reserve
+</a>
 <% } else { %>
 <a href="/login" class="show-reserve-btn" style="display:block; text-align:center; text-decoration:none;">
     Login to Reserve
@@ -176,8 +176,8 @@
 </div>
 
 <script>
-    const listingLat = <%= listing.latitude %>;
-    const listingLng = <%= listing.longitude %>;
+    const listingLat = Number("<%= listing.latitude %>");
+    const listingLng = Number("<%= listing.longitude %>");
 </script>
 
 <style>

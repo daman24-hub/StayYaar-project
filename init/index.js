@@ -1,52 +1,45 @@
+console.log("1 start");
+require("dotenv").config();
 const mongoose = require("mongoose");
+console.log("2 mongoose loaded");
 const initData = require("./generateData.js");
+console.log("3 data loaded");
 const Listing = require("../models/listing.js");
+const User = require("../models/user.js");
+console.log("4 models loaded");
 const { geocodeLocation } = require("../utils/geocode");
 
-const Mongo_URL = "mongodb://127.0.0.1:27017/ZENVORA";
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-main()
-  .then(async () => {
-    console.log("connected to DB");
-    await initDB();
-    mongoose.connection.close();
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+async function seed() {
+  await mongoose.connect(process.env.ATLAS_DB_URL, { serverSelectionTimeoutMS: 10000 });
+  console.log("Connected to Atlas");
 
-async function main() {
-  await mongoose.connect(Mongo_URL);
-}
+  const owner = await User.findOne();
+  if (!owner) throw new Error("No user found. Sign up in the app first.");
 
-const initDB = async () => {
-  await Listing.deleteMany({}); // to clean if data is already there
-  initData.data = initData.data.map((obj) => ({
-        ...obj,
-        owner: "000000000000000000000000", // placeholder ObjectId
-    }));
-
-  for (let listing of initData.data) {
-  try {
-    const coords = await geocodeLocation(
-      listing.location,
-      listing.country
-    );
-
-    listing.latitude = coords.latitude;
-    listing.longitude = coords.longitude;
-  } catch (err) {
-    listing.latitude = 20.5937;
-    listing.longitude = 78.9629;
+  // Geocode each unique location only once (Nominatim allows ~1 request/sec)
+  const cache = {};
+  for (const l of initData.data) {
+    const key = `${l.location},${l.country}`;
+    if (!cache[key]) {
+      cache[key] = await geocodeLocation(l.location, l.country);
+      console.log("Geocoded", key);
+      await sleep(1200);
+    }
+    l.latitude = cache[key].latitude;
+    l.longitude = cache[key].longitude;
+    l.owner = owner._id;
   }
 
-  await new Promise(resolve =>
-    setTimeout(resolve, 1200)
-  );
+  await Listing.deleteMany({});
+  await Listing.insertMany(initData.data);
+  console.log(`Seeded ${initData.data.length} listings, owner: ${owner.username}`);
 }
 
-
-await Listing.insertMany(initData.data);
-  console.log("Data initialized with coordinates");
-};
-
+seed()
+  .catch((err) => {
+    console.error("Seed failed:", err.message);
+    process.exitCode = 1;
+  })
+  .finally(() => mongoose.connection.close());

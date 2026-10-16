@@ -10,13 +10,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    bookings: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Booking" 
+    bookings: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Booking"
     }],
-    hostedListings: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Listing" 
+    hostedListings: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Listing"
     }],
     createdAt: {
         type: Date,
